@@ -8,7 +8,7 @@
 
 ### Introduction
 
-For this project, you will work with the [Tennis](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#tennis) environment.
+For this project, I will work with the [Tennis](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#tennis) environment.
 
 ![Trained Agent][image1]
 
@@ -39,24 +39,69 @@ The environment is considered solved, when the average (over 100 episodes) of th
 
 ### Instructions
 
+1. Follow the instructions in `Tennis.ipynb` to get started with training your own agent!  
+
+2. Make sure you got python 3 and anacoda installed. To install anacoda, please refer to this link [Anacoda](https://www.anaconda.com/download/)
+
+3. Setup anacoda deep reinforcement learning environment by create (and activate) a new environment with Python 3.6.
+* **Linux** or **Mac**:
+```
+conda create --name drlnd python=3.6
+source activate drlnd
+```
+
+* **Windows:**
+```
+conda create --name drlnd python=3.6 
+activate drlnd
+```
+
+4. Clone the repository and install the requirements
+```
+git clone https://github.com/udacity/deep-reinforcement-learning.git
+cd deep-reinforcement-learning/python
+pip install .
+```
+5. Create and IPython Kernel for the drlnd environment and select the environment in jupyter notebook
+```
+python -m ipykernel install --user --name drlnd --display-name "drlnd"
+```
+
+6. (optional) get requirement.txt by using 
+```
+$pip freeze > requirements.txt.
+```
+
+### Instructions
+
 Follow the instructions in `Tennis.ipynb` to get started with training your own agent!  
 
-### (Optional) Challenge: Crawler Environment
 
-After you have successfully completed the project, you might like to solve the more difficult **Soccer** environment.
+(_For AWS_) If you'd like to train the agent on AWS, you must follow the instructions to [set up X Server](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above.
 
-![Soccer][image2]
+1. Request service limit increase in AWS for p2.xlarge instance
 
-In this environment, the goal is to train a team of agents to play soccer.  
+2. Launch an p2.xlarge instance using Deep Learning AMI with Source Code (CUDA8,Uubntu) AMI
 
-You can read more about this environment in the ML-Agents GitHub [here](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#soccer-twos).  To solve this harder task, you'll need to download a new Unity environment.  (**Note**: Udacity students should not submit a project with this new environment.)
+3. Create a new security group set Protocol to TCP, port range as 8888 and SSH to the instance
 
-You need only select the environment that matches your operating system:
-- Linux: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Soccer/Soccer_Linux.zip)
-- Mac OSX: [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Soccer/Soccer.app.zip)
-- Windows (32-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Soccer/Soccer_Windows_x86.zip)
-- Windows (64-bit): [click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Soccer/Soccer_Windows_x86_64.zip)
+4. In order to create a config file for jupyter notebook settings.
+```
+jupyter notebook --generate-config
+```
 
-Then, place the file in the `p3_collab-compet/` folder in the DRLND GitHub repository, and unzip (or decompress) the file.  Next, open `Soccer.ipynb` and follow the instructions to learn how to use the Python API to control the agent.
+5. Clone the repo for this projec then install the requirements
+```
+sudo python3 -m pip install -r requirements/requirements-gpu.txt
+```
 
-(_For AWS_) If you'd like to train the agents on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Soccer/Soccer_Linux_NoVis.zip) to obtain the "headless" version of the environment.  You will **not** be able to watch the agents without enabling a virtual screen, but you will be able to train the agents.  (_To watch the agents, you should follow the instructions to [enable a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above._)
+6. Start the notebook
+```
+jupyter notebook --ip=0.0.0.0 --no-browser
+```
+
+7. Access the notebook from local browser. Access the Jupyter notebook index from your web browser by visiting: X.X.X.X:8888/?token=... (where X.X.X.X is the IP address of your EC2 instance and everything starting with :8888/?token= is what you just copied).
+
+### Run the code
+
+Open Tennis.ipynb in Jupyter and press Ctrl + Enter to run the code cell from first line to the last (Instruction is written in code cell)

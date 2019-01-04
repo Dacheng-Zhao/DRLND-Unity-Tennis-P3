@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
+BATCH_SIZE = 256        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-2              # for soft update of target parameters
 LR_ACTOR = 5e-4         # learning rate of the actor 
@@ -21,7 +21,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Agent():
     """Interacts with and learns from the environment."""
-    
+    critic_local = None
+    critic_target = None
+    critic_optimizer = None
     def __init__(self, state_size, action_size, random_seed):
         """Initialize an Agent object.
         
@@ -40,11 +42,17 @@ class Agent():
         self.actor_target = Actor(state_size, action_size, random_seed).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR)
 
+        # Share same critic
+        if Agent.critic_local is None:
+            Agent.critic_local = Critic(state_size, action_size, random_seed).to(device)
+        if Agent.critic_target is None:
+            Agent.critic_target = Critic(state_size, action_size, random_seed).to(device)
+        if Agent.critic_optimizer is None:
+            Agent.critic_optimizer = optim.Adam(Agent.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, random_seed).to(device)
-        self.critic_target = Critic(state_size, action_size, random_seed).to(device)
-        self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
-
+        self.critic_local = Agent.critic_local
+        self.critic_target = Agent.critic_target
+        self.critic_optimizer = Agent.critic_optimizer
         # Noise process
         self.noise = OUNoise(action_size, random_seed)
 
@@ -148,11 +156,12 @@ class Agent():
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2):
+    def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2, noise_amplitude=0.1):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta
         self.sigma = sigma
+        self.noise_amplitude = noise_amplitude
         self.seed = random.seed(seed)
         self.reset()
 
@@ -163,9 +172,9 @@ class OUNoise:
     def sample(self):
         """Update internal state and return it as a noise sample."""
         x = self.state
-        dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(len(x))
+        dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
         self.state = x + dx
-        return self.state * 0.1
+        return self.state * self.noise_amplitude
 
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
