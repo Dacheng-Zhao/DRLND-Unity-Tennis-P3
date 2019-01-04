@@ -17,9 +17,9 @@ Hyperparameter | Value
 Buffer size | 1e6    
 Batch size | 256
 Gamma | 0.99
-τ | 1e-3
-LR-actor | 1e-4
+τ | 1e-2
 LR-actor | 1e-3
+LR-actor | 5e-4
 
 ### DQN structure
 
@@ -29,6 +29,10 @@ The basic structure is from model.py in  [DDPG-Bipedal Udacity project repo](htt
 
 ### Results
 Below is the number of episodes needed to solve the environment for DDPG actor critic
+
+Environment solved in 1210 episodes!	Average Score: 0.50
+
+![Learning_results](Tennis_Solved.png) 
 
 ### Ideas for future improvements
 1. Add a LSTM layer to the network because each state could be moving to different directions
