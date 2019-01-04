@@ -13,9 +13,9 @@ BUFFER_SIZE = int(1e6)  # replay buffer size
 BATCH_SIZE = 256        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-2              # for soft update of target parameters
-LR_ACTOR = 5e-4         # learning rate of the actor 
+LR_ACTOR = 1e-3         # learning rate of the actor 
 LR_CRITIC = 5e-4        # learning rate of the critic
-WEIGHT_DECAY = 0.0001        # L2 weight decay
+WEIGHT_DECAY = 0        # L2 weight decay
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -42,17 +42,20 @@ class Agent():
         self.actor_target = Actor(state_size, action_size, random_seed).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR)
 
-        # Share same critic
-        if Agent.critic_local is None:
-            Agent.critic_local = Critic(state_size, action_size, random_seed).to(device)
-        if Agent.critic_target is None:
-            Agent.critic_target = Critic(state_size, action_size, random_seed).to(device)
-        if Agent.critic_optimizer is None:
-            Agent.critic_optimizer = optim.Adam(Agent.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
-        # Critic Network (w/ Target Network)
-        self.critic_local = Agent.critic_local
-        self.critic_target = Agent.critic_target
-        self.critic_optimizer = Agent.critic_optimizer
+#         # Share same critic
+#         if Agent.critic_local is None:
+#             Agent.critic_local = Critic(state_size, action_size, random_seed).to(device)
+#         if Agent.critic_target is None:
+#             Agent.critic_target = Critic(state_size, action_size, random_seed).to(device)
+#         if Agent.critic_optimizer is None:
+#             Agent.critic_optimizer = optim.Adam(Agent.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
+#         # Critic Network (w/ Target Network)
+#         self.critic_local = Agent.critic_local
+#         self.critic_target = Agent.critic_target
+#         self.critic_optimizer = Agent.critic_optimizer
+        self.critic_local = Critic(state_size, action_size, random_seed).to(device)
+        self.critic_target = Critic(state_size, action_size, random_seed).to(device)
+        self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
         # Noise process
         self.noise = OUNoise(action_size, random_seed)
 
